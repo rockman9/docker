@@ -1,0 +1,39 @@
+version: "3.8"
+services:
+    php:
+        container_name: web
+        build: .
+        ports: 
+            - "80:80"
+            - "443:443"
+        volumes:
+            - ./www:/var/www/html/
+        depends_on:
+            - db
+    db:
+        container_name: db
+        image: mysql
+        command: ["--log_bin_trust_function_creators=1","--max_allowed_packet=10448576000"]
+        ports: 
+            - "3306:3306"
+        environment:
+            MYSQL_DATABASE: myDb
+            MYSQL_USER: user
+            MYSQL_PASSWORD: test
+            MYSQL_ROOT_PASSWORD: root
+        volumes:
+            - ./mysql-data:/var/lib/mysql
+    phpmyadmin:
+        container_name: phpmyadmin
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - "8888:80"
+        restart: always
+        environment:
+            PMA_HOST: db
+        depends_on:
+            - db
+
+
+
+
